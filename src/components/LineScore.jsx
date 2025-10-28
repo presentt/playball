@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { selectLineScore, selectTeams } from '../features/games.js';
+import style from '../style/index.js';
 
 const getRuns = (inning, homeAway, isFinal) => {
   const runs = inning[homeAway].runs;
@@ -23,7 +24,7 @@ const getTeamLine = (linescore, totalInnings, homeAway, final) => (
   linescore.teams[homeAway].errors.toString().padStart(3)   
 );
 
-function LineScore({ align, final }) {
+function LineScore({ align, final, focused = false }) {
   const linescore = useSelector(selectLineScore);
   const teams = useSelector(selectTeams);
 
@@ -36,17 +37,30 @@ function LineScore({ align, final }) {
   const home = teams.home.abbreviation;
   const away = teams.away.abbreviation;
   const teamNameLength = 3;
-  let str = ''.padEnd(teamNameLength) + Array.from(Array(totalInnings).keys()).map(i => (i + 1).toString().padStart(2)).join(' ') + '   {bold}R{/bold}  H  E\n' + 
+  let str = ''.padEnd(teamNameLength) + Array.from(Array(totalInnings).keys()).map(i => (i + 1).toString().padStart(2)).join(' ') + '   {bold}R{/bold}  H  E\n' +
     away.padEnd(teamNameLength) + getTeamLine(linescore, totalInnings, 'away', final) + '\n' +
     home.padEnd(teamNameLength) + getTeamLine(linescore, totalInnings, 'home', final);
   return (
-    <box align={align} content={str} tags wrap={false} />
+    <box
+      align={align}
+      content={str}
+      tags
+      wrap={false}
+      scrollable={true}
+      keys={true}
+      mouse={true}
+      vi={true}
+      focused={focused}
+      scrollbar={style.scrollbar}
+      alwaysScroll={true}
+    />
   );
 }
 
 LineScore.propTypes = {
-  align: PropTypes.oneOf(['left', 'center', 'right']), 
+  align: PropTypes.oneOf(['left', 'center', 'right']),
   final: PropTypes.bool,
+  focused: PropTypes.bool,
 };
 
 export default LineScore;

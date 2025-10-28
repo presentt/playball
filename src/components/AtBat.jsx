@@ -1,15 +1,16 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectCurrentPlay } from '../features/games.js';
+import style from '../style/index.js';
 
-function AtBat() {
+function AtBat({ focused = false }) {
   const currentPlay = useSelector(selectCurrentPlay);
   const playEvents = currentPlay.playEvents;
   const playResult = currentPlay.about.isComplete ? currentPlay.result.description : '';
   let content = '';
   if (playResult) {
     content += `${playResult}\n\n`;
-  } 
+  }
   if (playEvents && playEvents.length) {
     content += playEvents.slice().reverse().map(event => {
       let line = '';
@@ -34,7 +35,17 @@ function AtBat() {
     }).join('\n');
   }
   return (
-    <box content={content} tags />
+    <box
+      content={content}
+      tags
+      focused={focused}
+      mouse
+      keys
+      vi
+      scrollable
+      scrollbar={style.scrollbar}
+      alwaysScroll
+    />
   );
 }
 
